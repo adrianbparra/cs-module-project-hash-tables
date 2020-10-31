@@ -23,7 +23,7 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-        self.capacity = capacity
+        self.capacity = max(capacity, MIN_CAPACITY)
         self.storage = [None] * capacity
 
 
@@ -49,6 +49,22 @@ class HashTable:
         """
         # Your code here
         pass
+        # total load
+        load = 0
+
+        # loopover all node
+        
+        for node in self.storage:
+
+            currNode = node
+
+            while node is not None:
+                
+                pass
+            
+
+
+
 
 
     def fnv1(self, key):
@@ -59,9 +75,27 @@ class HashTable:
         """
 
         # Your code here
-        offset_basis = 14695981039346656037
+    #     algorithm fnv-1 is
+    #       hash := FNV_offset_basis
 
-        
+    #     for each byte_of_data to be hashed do
+    #       hash := hash × FNV_prime
+    #       hash := hash XOR byte_of_data
+    #     return hash 
+
+        offset_basis = 14695981039346656037
+        FNV_prime = 1099511628211
+
+        hashed = offset_basis
+
+        bytes_to_code = key.encode()
+
+        for byte in bytes_to_code:
+            hashed = hashed * FNV_prime
+
+            hashed = hashed ^ byte
+            
+        return hashed
 
     def djb2(self, key):
         """
@@ -74,6 +108,7 @@ class HashTable:
 
         for c in key:
             long_hash = (long_hash * 33) + ord(c)
+            # long_hash = ((long_hash << 5) + c)
             
 
         return long_hash
@@ -96,7 +131,42 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        self.storage[self.hash_index(key)] = value
+        # self.storage[self.hash_index(key)] = value
+
+        # create new node
+        newNode = HashTableEntry(key,value)
+
+        # get index for storing
+        index = self.hash_index(key)
+
+        # get current item
+        currNode = self.storage[index]
+
+        # check if storage has node in it
+        if isinstance(currNode, HashTableEntry):
+
+            
+            # check if currNode.key is same
+            if currNode.key == key:
+                currNode.value = value
+
+
+            # if loop until it reaches the end and add node
+            while currNode.next is not None:
+                
+                # update the currNode to the next
+                currNode = currNode.next
+                
+                # if key is the same update value
+                if currNode.key == key:
+                    currNode.value = value
+                    return
+
+            # save the new node to the linked list
+            currNode.next = newNode
+        # else add the node
+        else:
+            self.storage[index] = newNode
 
 
     def delete(self, key):
@@ -107,8 +177,35 @@ class HashTable:
 
         Implement this.
         """
+
         # Your code here
-        self.storage[self.hash_index(key)] = None
+        # self.storage[self.hash_index(key)] = None
+
+        # get hashed index
+        index = self.hash_index(key)
+        
+        # get the node on that index
+        currNode = self.storage[index]
+
+        # if the currNode.key matches updated the storage since its the first one
+        if currNode.key == key:
+            self.storage[index] = currNode.next
+
+        else:
+            # while the currNode is not none
+            while currNode is not None:
+                # update to next node
+                prevNode = currNode
+
+                currNode = currNode.next
+
+                # if keys match
+                if currNode.key == key:
+                    # if there is a next
+                    prevNode.next = currNode.next
+
+                    return
+
 
 
     def get(self, key):
@@ -120,10 +217,25 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
-        print(self.hash_index(key))
+        # return self.storage[self.hash_index(key)]
+        # get index for hashed key
+        index = self.hash_index(key)
         
-        return self.storage[self.hash_index(key)]
+        # set the current node
+        currNode = self.storage[index]
+            
+        # loop over currNode till you find key or reach the end
+        while currNode is not None:
+
+            # if key matches
+            if currNode.key == key:
+                # return the value
+                return currNode.value
+            else:
+            # else update the currNode to the next node
+                currNode = currNode.next   
+
+        return currNode
 
 
     def resize(self, new_capacity):
@@ -157,18 +269,19 @@ if __name__ == "__main__":
     print("")
 
     # Test storing beyond capacity
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
+    # for i in range(1, 13):
+    #     print(ht.get(f"line_{i}"))
 
     # Test resizing
     old_capacity = ht.get_num_slots()
-    ht.resize(ht.capacity * 2)
+    # ht.resize(ht.capacity * 2)
     new_capacity = ht.get_num_slots()
 
     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
     # Test if data intact after resizing
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
+    # for i in range(1, 13):
+    #     print(ht.get(f"line_{i}"))
 
+    ht.get_load_factor()
     print("")
