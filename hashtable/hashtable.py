@@ -48,23 +48,26 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        pass
         # total load
         load = 0
 
         # loopover all node
         
         for node in self.storage:
-
+            # get current node
             currNode = node
 
-            while node is not None:
+            # if currNode has value
+            while currNode is not None:
                 
-                pass
-            
+                # add up the load
+                load += 1
 
+                # update to the next node
+                currNode = currNode.next
 
-
+        # calculate the load factor
+        return load / self.get_num_slots()
 
 
     def fnv1(self, key):
@@ -160,13 +163,19 @@ class HashTable:
                 # if key is the same update value
                 if currNode.key == key:
                     currNode.value = value
-                    return
+                    break
 
             # save the new node to the linked list
             currNode.next = newNode
         # else add the node
         else:
             self.storage[index] = newNode
+
+
+        if self.get_load_factor() > .7:
+            self.resize(self.capacity * 2)
+
+        
 
 
     def delete(self, key):
@@ -246,7 +255,33 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        pass
+
+        # update capacity to create new hashed values with correct capacity
+        self.capacity = new_capacity
+
+        # copy old storage
+        oldStorage = self.storage[:]
+
+        # create new capacity storage
+        newStorage = [None] * new_capacity
+        self.storage = newStorage
+
+        # loop over old storage including linked list
+        for node in oldStorage:
+            # get current node
+            currNode = node
+
+            # if currNode has value
+            while currNode is not None:
+                
+                # 
+                # if currnode exist hash key and value
+                
+                self.put(currNode.key,currNode.value)
+
+                # update to the next node
+                currNode = currNode.next
+        
 
 
 
@@ -274,7 +309,7 @@ if __name__ == "__main__":
 
     # Test resizing
     old_capacity = ht.get_num_slots()
-    # ht.resize(ht.capacity * 2)
+    ht.resize(ht.capacity * 2)
     new_capacity = ht.get_num_slots()
 
     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
@@ -283,5 +318,6 @@ if __name__ == "__main__":
     # for i in range(1, 13):
     #     print(ht.get(f"line_{i}"))
 
-    ht.get_load_factor()
+    print(f'load factor {ht.get_load_factor()}')
+
     print("")
