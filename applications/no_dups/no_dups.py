@@ -1,7 +1,20 @@
 def no_dups(s):
     # Your code here
 
+    # string = ""
+    # array = s.split(" ")
+    
+    # for x in array:
+    #     if x not in string:
+    #         string += f'{x} '
 
+    # return string.strip()
+
+    it = iter(s)
+
+    dictString = dict(zip(it,"n"))
+
+    print(dictString)
 
 if __name__ == "__main__":
     print(no_dups(""))
