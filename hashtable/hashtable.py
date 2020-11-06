@@ -25,6 +25,7 @@ class HashTable:
         # Your code here
         self.capacity = max(capacity, MIN_CAPACITY)
         self.storage = [None] * capacity
+        self.load = 0
 
 
     def get_num_slots(self):
@@ -49,25 +50,25 @@ class HashTable:
         """
         # Your code here
         # total load
-        load = 0
+        # load = 0
 
-        # loopover all node
+        # # loopover all node
         
-        for node in self.storage:
-            # get current node
-            currNode = node
+        # for node in self.storage:
+        #     # get current node
+        #     currNode = node
 
-            # if currNode has value
-            while currNode is not None:
+        #     # if currNode has value
+        #     while currNode is not None:
                 
-                # add up the load
-                load += 1
+        #         # add up the load
+        #         load += 1
 
-                # update to the next node
-                currNode = currNode.next
+        #         # update to the next node
+        #         currNode = currNode.next
 
         # calculate the load factor
-        return load / self.get_num_slots()
+        return self.load / self.get_num_slots()
 
 
     def fnv1(self, key):
@@ -166,9 +167,11 @@ class HashTable:
                     break
 
             # save the new node to the linked list
+            self.load += 1
             currNode.next = newNode
         # else add the node
         else:
+            self.load += 1
             self.storage[index] = newNode
 
 
@@ -198,6 +201,7 @@ class HashTable:
 
         # if the currNode.key matches updated the storage since its the first one
         if currNode.key == key:
+            self.load -= 1
             self.storage[index] = currNode.next
 
         else:
@@ -212,9 +216,12 @@ class HashTable:
                 if currNode.key == key:
                     # if there is a next
                     prevNode.next = currNode.next
+                    self.load -= 1
+
 
                     return
 
+            return None
 
 
     def get(self, key):
@@ -274,7 +281,6 @@ class HashTable:
             # if currNode has value
             while currNode is not None:
                 
-                # 
                 # if currnode exist hash key and value
                 
                 self.put(currNode.key,currNode.value)
